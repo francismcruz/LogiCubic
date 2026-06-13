@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidCubicaje(data) {
+      return data.keys().hasAll(['id', 'placa', 'fecha', 'volNeto']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.placa is string && data.placa.size() <= 20 &&
+        data.fecha is string && data.fecha.size() <= 50 &&
+        data.volNeto is number &&
+        
+        // Check optional field types if they exist
+        (!('cubicador' in data) || (data.cubicador is string && data.cubicador.size() <= 100)) &&
+        (!('chofer' in data) || (data.chofer is string && data.chofer.size() <= 100)) &&
+        (!('empresa' in data) || (data.empresa is string && data.empresa.size() <= 100)) &&
+        (!('empresaTransporte' in data) || (data.empresaTransporte is string && data.empresaTransporte.size() <= 100)) &&
+        (!('proyecto' in data) || (data.proyecto is string && data.proyecto.size() <= 100)) &&
+        
+        (!('A' in data) || data.A is number) &&
+        (!('B' in data) || data.B is number) &&
+        (!('C' in data) || data.C is number) &&
+        (!('volTolva' in data) || data.volTolva is number) &&
+        (!('tablaB' in data) || data.tablaB is number) &&
+        (!('tablaD' in data) || data.tablaD is number) &&
+        (!('tablaE' in data) || data.tablaE is number) &&
+        (!('volTabla' in data) || data.volTabla is number) &&
+        (!('bPlus' in data) || data.bPlus is number) &&
+        (!('bMinus' in data) || data.bMinus is number) &&
+        (!('H' in data) || data.H is number) &&
+        (!('volBotella' in data) || data.volBotella is number) &&
+        (!('sumaTotal' in data) || data.sumaTotal is number) &&
+        
+        (!('gpsLat' in data) || data.gpsLat is number) &&
+        (!('gpsLng' in data) || data.gpsLng is number) &&
+        (!('gpsAcc' in data) || data.gpsAcc is number) &&
+        (!('firma' in data) || (data.firma is string && data.firma.size() <= 500000)) &&
+        (!('foto' in data) || (data.foto is string && data.foto.size() <= 2000000)) &&
+        (!('userEmail' in data) || (data.userEmail is string && data.userEmail.size() <= 150)) &&
+        (!('userId' in data) || (data.userId is string && data.userId.size() <= 128));
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    match /cubicajes/{recordId} {
+      allow get, list: if isSignedIn() && (resource.data.userId == request.auth.uid || resource.data.userEmail == request.auth.token.email);
+      allow create: if isSignedIn() && isValidId(recordId) && isValidCubicaje(incoming()) && (incoming().userId == request.auth.uid || incoming().userEmail == request.auth.token.email);
+      allow update, delete: if false; // Immutable logs for strict site compliance
+    }
+  }
+}

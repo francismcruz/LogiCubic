@@ -1,0 +1,110 @@
+{
+  "entities": {
+    "cubicaje_record": {
+      "title": "Cubicaje Record",
+      "description": "Volumetric loading measurement record of a truck back with physical and geolocation evidence.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "placa": {
+          "type": "string"
+        },
+        "cubicador": {
+          "type": "string"
+        },
+        "chofer": {
+          "type": "string"
+        },
+        "empresa": {
+          "type": "string"
+        },
+        "empresaTransporte": {
+          "type": "string"
+        },
+        "proyecto": {
+          "type": "string"
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "A": {
+          "type": "number"
+        },
+        "B": {
+          "type": "number"
+        },
+        "C": {
+          "type": "number"
+        },
+        "volTolva": {
+          "type": "number"
+        },
+        "tablaB": {
+          "type": "number"
+        },
+        "tablaD": {
+          "type": "number"
+        },
+        "tablaE": {
+          "type": "number"
+        },
+        "volTabla": {
+          "type": "number"
+        },
+        "bPlus": {
+          "type": "number"
+        },
+        "bMinus": {
+          "type": "number"
+        },
+        "H": {
+          "type": "number"
+        },
+        "volBotella": {
+          "type": "number"
+        },
+        "sumaTotal": {
+          "type": "number"
+        },
+        "volNeto": {
+          "type": "number"
+        },
+        "gpsLat": {
+          "type": "number"
+        },
+        "gpsLng": {
+          "type": "number"
+        },
+        "gpsAcc": {
+          "type": "number"
+        },
+        "firma": {
+          "type": "string",
+          "description": "Base64 format png signature data of driver"
+        },
+        "foto": {
+          "type": "string",
+          "description": "Base64 format jpeg photo of loaded truck container"
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "The authenticated email of the operator"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The Firebase Authentication UID of the operator"
+        }
+      },
+      "required": ["id", "placa", "fecha", "volNeto"]
+    }
+  },
+  "firestore": {
+    "/cubicajes/{recordId}": {
+      "schema": "cubicaje_record",
+      "description": "Cubicaje records collected of hauling trucks on active field sites."
+    }
+  }
+}

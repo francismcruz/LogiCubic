@@ -1,0 +1,8 @@
+{
+  "name": "Remix: LogiCubic",
+  "description": "Cubicador de Tolva Oficial para cubicaje de camiones de carga",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
